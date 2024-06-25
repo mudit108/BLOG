@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', require('./routes'));
 
-const PORT = 3500;
+const PORT = 3511;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

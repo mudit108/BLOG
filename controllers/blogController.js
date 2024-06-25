@@ -3,25 +3,29 @@ const User = require('../models/User');
 
 exports.getblogs = async (req, res) => {
     try {
-        const blogs = await blog.find();
+        const blogs = await blog.find({});
         res.render('index', { blogs });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.send('Server Error');
     }
 };
 
 
 exports.getblogById = async (req, res) => {
+    const {id}=req.params
+    console.log(id);
     try {
-        const blog = await blog.findById(req.params.id);
-        if (!blog) {
-            return res.status(404).send('blog not found');
+        const blogs = await blog.findById(id);
+        
+        if (!blogs) {
+            return res.send('blog not found');
         }
-        res.render('blog', { blog });
+        return res.render('blog', { blogs });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        console.log(blog);
+        res.send('Server Error');
     }
 };
 
@@ -44,7 +48,7 @@ exports.createblog = async (req, res) => {
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error1212121212');
+        res.send('Server Error1212121212');
     }
 };
 
@@ -57,7 +61,7 @@ exports.editblog = async (req, res) => {
         res.render('editblog', { blog });
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.send('Server Error');
     }
 };
 
@@ -79,7 +83,7 @@ exports.updateblog = async (req, res) => {
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.send('Server Error');
     }
 };
 
@@ -89,7 +93,7 @@ exports.deleteblog = async (req, res) => {
         res.redirect('/');
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server Error');
+        res.send('Server Error');
     }
 };
 
@@ -122,33 +126,30 @@ exports.loginPage = (req, res) => {
 };
 
 
-// Login Route
+
 exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Check if user exists
         let user = await User.findOne({ email });
 
         if (!user) {
-            return res.status(400).json({ msg: 'Invalid Credentials' });
+            return res.json({ msg: 'Invalid Credentials' });
         }
 
-        // Validate password
         if (password !== user.password) {
-            return res.status(400).json({ msg: 'Invalid Credentials' });
+            return res.json({ msg: 'Invalid Credentials' });
         }
 
-        // Set cookie with user ID (simplified example)
         res.cookie('userId', user._id.toString(), { httpOnly: true });
         res.redirect('/');
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server Error');
+        res.send('Server Error');
     }
 };
 
-// Logout Route
+
 exports.logout =  (req, res) => {
     res.clearCookie('userId');
     res.redirect('login');
